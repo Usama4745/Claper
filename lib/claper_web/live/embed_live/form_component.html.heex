@@ -1,0 +1,24 @@
+<div>
+    <.form :let={f} for={@changeset} id="embed-form" phx-target={@myself} phx-change="validate" phx-submit="save">
+
+        <div class="my-3 mb-10">
+            <ClaperWeb.Component.Input.text 
+                form={f} key={:title} 
+                name={gettext("Title of your form")} 
+                labelClass={if @dark, do: "text-white" } 
+                fieldClass={if @dark, do: "bg-gray-700 text-white" } 
+                autofocus="true"
+                required="true" />
+        </div>
+        <!-- URL Input Field -->
+        <div class="my-3">
+            <ClaperWeb.Component.Input.text form={f} key={:url} name={gettext("URL")} labelClass={if @dark,
+                do: "text-white" } fieldClass={if @dark, do: "bg-gray-700 text-white" } placeholder={gettext("Enter the
+                URL here")} required="true" />
+        </div>
+
+        <%= inputs_for f, :fields, fn i -> %>
+            <!-- Dynamic fields added here -->
+            <% end %>
+    </.form>
+</div>

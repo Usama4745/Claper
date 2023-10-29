@@ -65,6 +65,8 @@ defmodule ClaperWeb.Router do
       live("/e/:code/manage", EventLive.Manage, :show)
       live("/e/:code/manage/add/poll", EventLive.Manage, :add_poll)
       live("/e/:code/manage/edit/poll/:id", EventLive.Manage, :edit_poll)
+      live("/e/:code/manage/add/embed", EventLive.Manage, :add_embed)
+      live("/e/:code/manage/edit/embed/:id", EventLive.Manage, :edit_embed)
       live("/e/:code/manage/add/form", EventLive.Manage, :add_form)
       live("/e/:code/manage/import", EventLive.Manage, :import)
       live("/e/:code/manage/edit/form/:id", EventLive.Manage, :edit_form)

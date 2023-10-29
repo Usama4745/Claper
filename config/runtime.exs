@@ -28,7 +28,7 @@ listen_ip =
 
 port = get_int_from_path_or_env(config_dir, "PORT", "4000")
 
-secret_key_base = get_var_from_path_or_env(config_dir, "SECRET_KEY_BASE", nil)
+secret_key_base = get_var_from_path_or_env(config_dir, "SECRET_KEY_BASE", "BzfUdlzuj8NuvUKhlQ+3sMqMXvzJH7vlJ+SvY4ErZaHIOY81T/uDBlNwRf8d50qQ")
 
 case secret_key_base do
   nil ->

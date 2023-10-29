@@ -13,7 +13,8 @@ defmodule Claper.Tasks.Converter do
   """
   def convert(user_id, file, hash, ext, presentation_file_id) do
     presentation = Claper.Presentations.get_presentation_file!(presentation_file_id, [:event])
-
+    IO.puts("convert asdpresentation file here")
+    IO.inspect(presentation)
     {:ok, presentation} =
       Claper.Presentations.update_presentation_file(presentation, %{
         "status" => "progress"
@@ -27,12 +28,14 @@ defmodule Claper.Tasks.Converter do
 
     path =
       Path.join([
-        get_presentation_storage_dir(),
         "uploads",
         "#{hash}"
       ])
 
+    IO.puts("conversion stafrting here for ")
+
     IO.puts("Starting conversion for #{hash}...")
+    IO.puts("here is the path #{path}")
 
     file_to_pdf(String.to_atom(ext), path, file)
     |> pdf_to_jpg(path, presentation, user_id)
@@ -48,7 +51,6 @@ defmodule Claper.Tasks.Converter do
     if get_presentation_storage() == "local" do
       File.rm_rf(
         Path.join([
-          get_presentation_storage_dir(),
           "uploads",
           "#{hash}"
         ])
@@ -97,8 +99,9 @@ defmodule Claper.Tasks.Converter do
 
   defp pdf_to_jpg(%Result{status: 0}, path, _presentation, _user_id) do
     resolution = get_resolution()
-
-    Porcelain.exec(
+    IO.puts("presnetation get reol")
+    IO.puts("here is the path #{path} get reol")
+    result=Porcelain.exec(
       "gs",
       [
         "-sDEVICE=png16m",
@@ -109,27 +112,30 @@ defmodule Claper.Tasks.Converter do
         "#{path}/original.pdf"
       ]
     )
+    IO.puts("result here")
+    IO.inspect(result)
   end
 
   defp pdf_to_jpg(_result, path, presentation, user_id) do
+    IO.puts("failure get reol")
+
     failure(presentation, path, user_id)
   end
 
   defp jpg_upload(%Result{status: 0}, hash, path, presentation, user_id) do
-    files = Path.wildcard("#{path}/*.jpg")
+    IO.puts("failure pdf_to_jpg get reol")
 
+    files = Path.wildcard("#{path}/*.jpg")
     # assign new hash to avoid cache issues
     new_hash = :erlang.phash2("#{hash}-#{System.system_time(:second)}")
 
     if get_presentation_storage() == "local" do
       File.rename(
         Path.join([
-          get_presentation_storage_dir(),
           "uploads",
           "#{hash}"
         ]),
         Path.join([
-          get_presentation_storage_dir(),
           "uploads",
           "#{new_hash}"
         ])
@@ -157,6 +163,8 @@ defmodule Claper.Tasks.Converter do
   end
 
   defp jpg_upload(_result, _hash, path, presentation, user_id) do
+    IO.puts("failure here is jpg uploading here")
+
     failure(presentation, path, user_id)
   end
 

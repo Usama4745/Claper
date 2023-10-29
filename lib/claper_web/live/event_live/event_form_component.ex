@@ -96,7 +96,6 @@ defmodule ClaperWeb.EventLive.EventFormComponent do
 
     static_path =
       Path.join([
-        get_presentation_storage_dir(),
         "uploads",
         "#{hash}"
       ])
@@ -107,17 +106,30 @@ defmodule ClaperWeb.EventLive.EventFormComponent do
           consume_uploaded_entries(socket, :presentation_file, fn %{path: path}, entry ->
             [ext | _] = MIME.extensions(entry.client_type)
 
-            dest =
-              Path.join([
-                static_path,
-                "original.#{ext}"
-              ])
+            # dest =
+            #   Path.join([
+            #     static_path,
+            #     "original.#{ext}"
+            #   ])
+
+            File.mkdir(static_path)
+            dest = Path.join(static_path, "original.#{ext}")
 
             # The storage directory must exist for `File.cp!/2` to work.
-            File.mkdir_p!(static_path)
+            IO.puts("asd create #{static_path} folder")
+            IO.puts("/#{static_path}")
+            # File.mkdir_p!("/#{static_path}")
+            # if File.dir?("/#{static_path}") do
+            #   IO.puts("Directory exists: #{static_path}")
+            # else
+            #   IO.puts("Directory not created: #{static_path}")
+            # end
+
+            IO.puts("tringasd to create folder")
+            IO.puts("/uploads/#{hash}/#{Path.basename(dest)}")
+            IO.inspect(File.exists?(path))
 
             File.cp!(path, dest)
-
             {:ok, Routes.static_path(socket, "/uploads/#{hash}/#{Path.basename(dest)}")}
           end)
 
@@ -156,6 +168,9 @@ defmodule ClaperWeb.EventLive.EventFormComponent do
   end
 
   defp create_event(socket, event_params, hash, ext) do
+    IO.puts("create_asdevent is laucnehd to create folder")
+    IO.puts("create_event to create  #{hash} folder  #{ext} folder")
+
     case Events.create_event(
            event_params
            |> Map.put("user_id", socket.assigns.current_user.id)
@@ -163,6 +178,8 @@ defmodule ClaperWeb.EventLive.EventFormComponent do
       {:ok, event} ->
         with e <- Events.get_event!(event.uuid, [:presentation_file]) do
           Task.Supervisor.async_nolink(Claper.TaskSupervisor, fn ->
+            IO.puts("asd folder")
+
             Claper.Tasks.Converter.convert(
               socket.assigns.current_user.id,
               "original.#{ext}",

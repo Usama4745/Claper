@@ -215,6 +215,26 @@
                 </div>
               </a>
             </li>
+            <li id="option-3" role="option" tabindex="-1">
+              <a
+                data-phx-link="patch"
+                data-phx-link-state="push"
+                href={Routes.event_manage_path(@socket, :add_form, @event.code)}
+                class="group flex select-none rounded-xl p-3 w-full hover:bg-gray-200 cursor-pointer"
+              >
+                <div class="flex h-12 w-12 flex-none text-white items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-secondary-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+                  </svg>
+                </div>
+                <div class="ml-4 flex-auto text-left">
+                  <p class="font-medium text-gray-700"><%= gettext("Embed") %></p>
+                  <p class="text-gray-500">
+                    <%= gettext("Add a Youtube video or any web content") %>
+                  </p>
+                </div>
+              </a>
+            </li>
           </ul>
 
           <%= if (length @polls) == 0 && (length @forms) == 0 do %>
@@ -283,6 +303,26 @@
               event_uuid={@event.uuid}
               presentation_file={@event.presentation_file}
               form={@form}
+              live_action={@create_action}
+              position={@state.position}
+              return_to={Routes.event_manage_path(@socket, :show, @event.code)}
+            />
+          </div>
+        <% end %>
+        <%= if @create == "embed" do %>
+          <div class="scroll-py-3 overflow-y-auto bg-gray-100 p-3">
+            <p class="text-xl font-bold">
+              <%= case @create_action do
+                :new -> gettext("New form")
+                :edit -> gettext("Edit form")
+              end %>
+            </p>
+            <.live_component
+              module={ClaperWeb.EmbedLive.FormComponent}
+              id="embed-create"
+              event_uuid={@event.uuid}
+              presentation_file={@event.presentation_file}
+              form={@event}
               live_action={@create_action}
               position={@state.position}
               return_to={Routes.event_manage_path(@socket, :show, @event.code)}
